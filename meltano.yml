@@ -1,0 +1,21 @@
+version: 1
+send_anonymous_usage_stats: true
+project_id: tap-salesforce
+plugins:
+  extractors:
+  - name: tap-salesforce
+    namespace: tap_salesforce
+    pip_url: -e .
+    capabilities:
+    - state
+    - catalog
+    - discover
+    - about
+    - stream-maps
+    settings:
+    - name: username
+    - name: password
+      kind: password
+    - name: security_token
+      kind: password
+    - name: start_date

@@ -1,0 +1,25 @@
+{
+  "type": "object",
+  "properties": {
+    "Id": {
+      "type": "string",
+      "description": "ID of the document."
+    },
+    "LinkedEntityId": {
+      "type": "string",
+      "description": "ID of the linked object. Can include Chatter users, groups, records (any that support Chatter feed tracking including custom objects), and Salesforce CRM Content libraries."
+    },
+    "ContentDocumentId": {
+      "type": "string",
+      "description": "ID of the document."
+    },
+    "IsDeleted": {
+      "type": "boolean",
+      "description": "Indicates whether the record has been moved to the Recycle Bin (true) or not (false). Because this field does not appear in all objects, it is listed in the field table for each object."
+    },
+    "SystemModstamp": {
+      "type": "string",
+      "description": "Date and time when a user or automated process (such as a trigger) last modified this record."
+    }
+  }
+}

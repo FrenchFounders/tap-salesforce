@@ -1,0 +1,13 @@
+{
+  "type": "object",
+  "properties": {
+    "ContentDocumentId": {
+      "type": "string",
+      "description": "ID of the document."
+    },
+    "Content": {
+      "type": "string",
+      "description": "The content or body of the note, which can include properly formatted HTML or plain text."
+    }
+  }
+}
