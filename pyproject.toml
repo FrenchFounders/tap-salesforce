@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "frenchfounders-tap-salesforce"
+name = "tap-salesforce"
 version = "0.0.1"
 description = "`tap-salesforce` is a Singer tap for salesforce, built with the Meltano Singer SDK."
 readme = "README.md"
