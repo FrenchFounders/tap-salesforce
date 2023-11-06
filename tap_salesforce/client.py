@@ -75,7 +75,7 @@ class SalesforceStream(RESTStream):
         Returns:
             A dictionary of HTTP headers.
         """
-        headers = super().http_headers()
+        headers = super().http_headers
         headers['Authorization'] = "Bearer {}".format(self._access_token)
 
         return headers
