@@ -15,9 +15,9 @@ SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 class ContentDocumentLinksStream(SalesforceStream):
     """ContentDocumentLinks stream"""
 
-    def __init__(self, tap, source, name: str | None = None, schema=None, path: str | None = None):
+    def __init__(self, tap, source):
         self.source = source
-        super().__init__(tap, name, schema, path)
+        super().__init__(tap)
 
     path = "/services/data/v59.0/queryAll"
     primary_keys: t.ClassVar[list[str]] = ["Id"]
@@ -66,9 +66,9 @@ class ContentNoteContentsStream(SalesforceStream):
     ContentNoteContents stream
     """
 
-    def __init__(self, tap, source, name: str | None = None, schema=None, path: str | None = None):
+    def __init__(self, tap, source):
         self.source = source
-        super().__init__(tap, name, schema, path)
+        super().__init__(tap)
 
     parent_stream_type = ContentDocumentLinksStream
     ignore_parent_replication_keys = False
@@ -115,9 +115,9 @@ class ContentNotesStream(SalesforceStream):
     ContentNotes stream
     """
 
-    def __init__(self, tap, source, name: str | None = None, schema=None, path: str | None = None):
+    def __init__(self, tap, source):
         self.source = source
-        super().__init__(tap, name, schema, path)
+        super().__init__(tap)
 
     parent_stream_type = ContentDocumentLinksStream
     ignore_parent_replication_keys = False
