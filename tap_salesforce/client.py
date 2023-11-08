@@ -21,9 +21,8 @@ SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 class SalesforceStream(RESTStream):
     """salesforce stream class."""
 
-    def __init__(self, is_sandbox=False):
-        super().__init__(is_sandbox)
-        self.is_sandbox = is_sandbox
+    def __init__(self, tap, name: str | None = None, schema=None, path: str | None = None):
+        super().__init__(tap, name, schema, path)
         self._credentials = None
         self._access_token = None
         self._instance_url = ''

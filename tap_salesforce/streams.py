@@ -13,9 +13,12 @@ SCHEMAS_DIR = Path(__file__).parent / Path("./schemas")
 
 
 class ContentDocumentLinksStream(SalesforceStream):
-    """Define custom stream."""
+    """ContentDocumentLinks stream"""
 
-    name = "content_document_links"
+    def __init__(self, tap, source, name: str | None = None, schema=None, path: str | None = None):
+        self.source = source
+        super().__init__(tap, name, schema, path)
+
     path = "/services/data/v59.0/queryAll"
     primary_keys: t.ClassVar[list[str]] = ["Id"]
     replication_key = "SystemModstamp"
@@ -23,11 +26,15 @@ class ContentDocumentLinksStream(SalesforceStream):
     next_page_token_jsonpath = "$.nextRecordsUrl"
     schema_filepath = SCHEMAS_DIR / "content_document_links.json"
 
+    @property
+    def name(self):
+        return "content_document_links_{}".format(self.source)
+
     def get_url_params(
             self, context: th.Optional[dict], next_page_token: th.Optional[th.Any]
     ) -> th.Dict[str, th.Any]:
         params = super().get_url_params(context, next_page_token)
-        params["q"] = "SELECT Id,LinkedEntityId,ContentDocumentId,IsDeleted,SystemModstamp FROM ContentDocumentLink WHERE LinkedEntityId IN (SELECT Id FROM Contact)"
+        params["q"] = "SELECT Id,LinkedEntityId,ContentDocumentId,IsDeleted,SystemModstamp FROM ContentDocumentLink WHERE LinkedEntityId IN (SELECT Id FROM {})".format(self.source)
         if self.get_starting_replication_key_value(context) != None:
             params["q"] += f" AND SystemModstamp>{self.get_starting_replication_key_value(context)[:19]}Z"
         return params
@@ -54,17 +61,24 @@ class ContentDocumentLinksStream(SalesforceStream):
         return {"ContentDocumentId": record["ContentDocumentId"]}
 
 
-class ContentNotesStream(SalesforceStream):
+class ContentNoteContentsStream(SalesforceStream):
     """
-    ContentNotes stream
+    ContentNoteContents stream
     """
 
-    name = "content_notes"
+    def __init__(self, tap, source, name: str | None = None, schema=None, path: str | None = None):
+        self.source = source
+        super().__init__(tap, name, schema, path)
+
     parent_stream_type = ContentDocumentLinksStream
     ignore_parent_replication_keys = False
-    schema_filepath = SCHEMAS_DIR / "content_notes.json"
+    schema_filepath = SCHEMAS_DIR / "content_note_contents.json"
     replication_key = None
     state_partitioning_keys = []
+
+    @property
+    def name(self):
+        return "content_note_contents_{}".format(self.source)
 
     @property
     def path(self):
@@ -94,3 +108,34 @@ class ContentNotesStream(SalesforceStream):
                 # Record filtered out during post_process()
                 continue
             yield transformed_record
+
+
+class ContentNotesStream(SalesforceStream):
+    """
+    ContentNotes stream
+    """
+
+    def __init__(self, tap, source, name: str | None = None, schema=None, path: str | None = None):
+        self.source = source
+        super().__init__(tap, name, schema, path)
+
+    parent_stream_type = ContentDocumentLinksStream
+    ignore_parent_replication_keys = False
+    schema_filepath = SCHEMAS_DIR / "content_notes.json"
+    replication_key = None
+    state_partitioning_keys = []
+
+    @property
+    def name(self):
+        return "content_notes_{}".format(self.source)
+
+    @property
+    def path(self):
+        """Set the path for the stream."""
+        return "/services/data/v59.0/sobjects/ContentNote/{ContentDocumentId}"
+
+    def parse_response(self, response):
+        response_dict = {
+            'Content': response.text
+        }
+        return [response_dict]

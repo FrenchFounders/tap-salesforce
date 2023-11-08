@@ -1,13 +1,81 @@
 {
   "type": "object",
   "properties": {
-    "ContentDocumentId": {
+    "Id": {
       "type": "string",
-      "description": "ID of the document."
+      "description": "ID of the note."
+    },
+    "Title": {
+      "type": "string",
+      "description": "Title of the note."
+    },
+    "CreatedById": {
+      "type": "string",
+      "description": "ID of the User who created this record. CreatedById fields have Defaulted on create and Filter access."
+    },
+    "CreatedDate": {
+      "type": "string",
+      "description": "Date and time when this record was created. CreatedDate fields have Defaulted on create and Filter access."
+    },
+    "LastModifiedById": {
+      "type": "string",
+      "description": "ID of the User who last updated this record. LastModifiedById fields have Defaulted on create and Filter access."
+    },
+    "LastModifiedDate": {
+      "type": "string",
+      "description": "Date and time when a user last modified this record. LastModifiedDate fields have Defaulted on create and Filter access."
+    },
+    "ContentModifiedDate": {
+      "type": "string",
+      "description": "Date the document was modified."
+    },
+    "LastViewedDate": {
+      "type": "string",
+      "description": "Date the note was last viewed."
+    },
+    "FileType": {
+      "type": "string",
+      "description": "Type of file for the note. All notes have a file type of SNOTE."
+    },
+    "TextPreview": {
+      "type": "string",
+      "description": "A preview of the note’s content. "
+    },
+    "ContentSize": {
+      "type": "string",
+      "description": "Size of the note in bytes."
+    },
+    "IsDeleted": {
+      "type": "string",
+      "description": "Indicates whether the record has been moved to the Recycle Bin (true) or not (false)."
+    },
+    "FileExtension": {
+      "type": "string",
+      "description": "File extension of the note."
+    },
+    "LatestPublishedVersionId": {
+      "type": "string",
+      "description": "ID of the ContentVersion for the latest published version of the note."
+    },
+    "OwnerId": {
+      "type": "string",
+      "description": "ID of the owner of the note."
+    },
+    "LatestContentId": {
+      "type": "string",
+      "description": "Lookup to the note's ContentBody."
     },
     "Content": {
       "type": "string",
-      "description": "The content or body of the note, which can include properly formatted HTML or plain text."
+      "description": "Path to the content body of the note."
+    },
+    "IsReadOnly": {
+      "type": "string",
+      "description": "Indicates whether the note is read only."
+    },
+    "SharingPrivacy": {
+      "type": "string",
+      "description": "Controls sharing privacy for a file."
     }
   }
 }
