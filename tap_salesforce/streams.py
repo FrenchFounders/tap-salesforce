@@ -37,6 +37,7 @@ class ContentDocumentLinksStream(SalesforceStream):
         params["q"] = "SELECT Id,LinkedEntityId,ContentDocumentId,IsDeleted,SystemModstamp FROM ContentDocumentLink WHERE LinkedEntityId IN (SELECT Id FROM {})".format(self.source)
         if self.get_starting_replication_key_value(context) != None:
             params["q"] += f" AND SystemModstamp>{self.get_starting_replication_key_value(context)[:19]}Z"
+        params["q"] += " ORDER BY SystemModstamp"
         return params
 
     def prepare_request(self, context: dict | None, next_page_token=None):
