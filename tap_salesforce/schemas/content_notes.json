@@ -30,7 +30,7 @@
       "description": "Date the document was modified."
     },
     "LastViewedDate": {
-      "type": "string",
+      "type": ["string", "null"],
       "description": "Date the note was last viewed."
     },
     "FileType": {
@@ -38,15 +38,15 @@
       "description": "Type of file for the note. All notes have a file type of SNOTE."
     },
     "TextPreview": {
-      "type": "string",
+      "type": ["string", "null"],
       "description": "A preview of the note’s content. "
     },
     "ContentSize": {
-      "type": "string",
+      "type": "integer",
       "description": "Size of the note in bytes."
     },
     "IsDeleted": {
-      "type": "string",
+      "type": "boolean",
       "description": "Indicates whether the record has been moved to the Recycle Bin (true) or not (false)."
     },
     "FileExtension": {
@@ -70,7 +70,7 @@
       "description": "Path to the content body of the note."
     },
     "IsReadOnly": {
-      "type": "string",
+      "type": "boolean",
       "description": "Indicates whether the note is read only."
     },
     "SharingPrivacy": {

@@ -134,9 +134,3 @@ class ContentNotesStream(SalesforceStream):
     def path(self):
         """Set the path for the stream."""
         return "/services/data/v59.0/sobjects/ContentNote/{ContentDocumentId}"
-
-    def parse_response(self, response):
-        response_dict = {
-            'Content': response.text
-        }
-        return [response_dict]
