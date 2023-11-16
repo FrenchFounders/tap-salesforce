@@ -34,9 +34,9 @@ class ContentDocumentLinksStream(SalesforceStream):
             self, context: th.Optional[dict], next_page_token: th.Optional[th.Any]
     ) -> th.Dict[str, th.Any]:
         params = super().get_url_params(context, next_page_token)
-        params["q"] = "SELECT Id,LinkedEntityId,ContentDocumentId,IsDeleted,SystemModstamp FROM ContentDocumentLink WHERE LinkedEntityId IN (SELECT Id FROM {}) AND SystemModstamp>2023-09-01T09:12:38Z".format(self.source)
-        # if self.get_starting_replication_key_value(context) != None:
-        #     params["q"] += f" AND SystemModstamp>{self.get_starting_replication_key_value(context)[:19]}Z"
+        params["q"] = "SELECT Id,LinkedEntityId,ContentDocumentId,IsDeleted,SystemModstamp FROM ContentDocumentLink WHERE LinkedEntityId IN (SELECT Id FROM {})".format(self.source)
+        if self.get_starting_replication_key_value(context) is not None:
+            params["q"] += f" AND SystemModstamp>{self.get_starting_replication_key_value(context)[:19]}Z"
         params["q"] += " ORDER BY SystemModstamp"
         return params
 
