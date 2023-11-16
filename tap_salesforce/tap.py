@@ -49,14 +49,10 @@ class Tapsalesforce(Tap):
         """
         return [
             streams.ContentDocumentLinksStream(tap=self, source='Opportunity'),
-            streams.ContentNotesStream(tap=self, source='Opportunity'),
-            streams.ContentNoteContentsStream(tap=self, source='Opportunity'),
             streams.ContentDocumentLinksStream(tap=self, source='Account'),
-            streams.ContentNotesStream(tap=self, source='Account'),
-            streams.ContentNoteContentsStream(tap=self, source='Account'),
             streams.ContentDocumentLinksStream(tap=self, source='Contact'),
-            streams.ContentNotesStream(tap=self, source='Contact'),
-            streams.ContentNoteContentsStream(tap=self, source='Contact'),
+            streams.ContentNotesStream(tap=self),
+            streams.ContentNoteContentsStream(tap=self),
         ]
 
 if __name__ == "__main__":
