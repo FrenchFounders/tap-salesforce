@@ -51,6 +51,7 @@ class Tapsalesforce(Tap):
             streams.ContentDocumentLinksStream(tap=self, source='Opportunity'),
             streams.ContentDocumentLinksStream(tap=self, source='Account'),
             streams.ContentDocumentLinksStream(tap=self, source='Contact'),
+            streams.ContentDocumentLinksStream(tap=self, source='Lead'),
             streams.ContentNotesStream(tap=self),
             streams.ContentNoteContentsStream(tap=self),
         ]
