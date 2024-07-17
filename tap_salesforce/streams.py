@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import typing as t
 from pathlib import Path
+from datetime import datetime, timedelta
 
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
@@ -34,10 +35,15 @@ class ContentDocumentLinksStream(SalesforceStream):
             self, context: th.Optional[dict], next_page_token: th.Optional[th.Any]
     ) -> th.Dict[str, th.Any]:
         params = super().get_url_params(context, next_page_token)
-        params["q"] = "SELECT Id,LinkedEntityId,ContentDocumentId,IsDeleted,SystemModstamp FROM ContentDocumentLink WHERE LinkedEntityId IN (SELECT Id FROM {})".format(self.source)
-        if self.get_starting_replication_key_value(context) is not None:
-            params["q"] += f" AND SystemModstamp>{self.get_starting_replication_key_value(context)[:19]}Z"
+        params["q"] = f"SELECT Id,LinkedEntityId,ContentDocumentId,IsDeleted,SystemModstamp FROM ContentDocumentLink WHERE LinkedEntityId IN (SELECT Id FROM {self.source})"
+        replication_key = self.get_starting_replication_key_value(context)
+        if replication_key is not None:
+            # SystemModstamp is not updated when the content is updated, remove 2 weeks to track modifications
+            replication_date = datetime.strptime(replication_key, '%Y-%m-%dT%H:%M:%S.%f%z') - timedelta(weeks=2)
+            params["q"] += f" AND SystemModstamp > {replication_date.strftime('%Y-%m-%dT%H:%M:%SZ')}"
+
         params["q"] += " ORDER BY SystemModstamp LIMIT 500"
+
         return params
 
     def prepare_request(self, context: dict | None, next_page_token=None):
@@ -72,6 +78,7 @@ class ContentNoteContentsStream(SalesforceStream):
 
     parent_stream_type = ContentDocumentLinksStream
     name = 'content_note_contents'
+    primary_keys: t.ClassVar[list[str]] = ["ContentDocumentId"]
     ignore_parent_replication_keys = False
     schema_filepath = SCHEMAS_DIR / "content_note_contents.json"
     replication_key = None
@@ -117,6 +124,7 @@ class ContentNotesStream(SalesforceStream):
 
     parent_stream_type = ContentDocumentLinksStream
     name = 'content_notes'
+    primary_keys: t.ClassVar[list[str]] = ["Id"]
     ignore_parent_replication_keys = False
     schema_filepath = SCHEMAS_DIR / "content_notes.json"
     replication_key = None
