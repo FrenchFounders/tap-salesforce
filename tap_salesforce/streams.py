@@ -2,10 +2,12 @@
 
 from __future__ import annotations
 
+import types
 import typing as t
 from pathlib import Path
 from datetime import datetime, timedelta
 
+import requests
 from singer_sdk import typing as th  # JSON Schema typing helpers
 
 from tap_salesforce.client import SalesforceStream
@@ -86,32 +88,21 @@ class ContentNoteContentsStream(SalesforceStream):
 
     @property
     def path(self):
-        """Set the path for the stream."""
         return "/services/data/v59.0/sobjects/ContentNote/{ContentDocumentId}/Content"
 
-    def parse_response(self, response):
-        response_dict = {
-            'Content': response.text
-        }
-        return [response_dict]
+    def parse_response(self, response: requests.Response) -> t.Iterable[dict]:
+        content = None
+        if response.status_code == requests.codes.ok:
+            content = response.text
 
-    def get_records(self, context: t.Optional[dict]):
-        """Return a generator of row-type dictionary objects.
+        return [{
+            "Content": content
+        }]
 
-        The optional `context` argument is used to identify a specific slice of the
-        stream if partitioning is required for the stream. Most implementations do not
-        require partitioning and should ignore the `context` argument.
-        """
-        for record in self.request_records(context):
-            try:
-                transformed_record = self.post_process(record, context)
-                transformed_record['ContentDocumentId'] = context.get("ContentDocumentId")
-            except:
-                transformed_record = {'Content': None, 'ContentDocumentId': context.get("ContentDocumentId")}
-            if transformed_record is None or ('resource does not exist' in transformed_record['Content']):
-                # Record filtered out during post_process()
-                continue
-            yield transformed_record
+    def post_process(self, row: types.Record, context: types.Context | None = None) -> dict | None:
+        if row["Content"] is not None:
+            row["ContentDocumentId"] = context.get("ContentDocumentId")
+            return row
 
 
 class ContentNotesStream(SalesforceStream):
@@ -132,5 +123,8 @@ class ContentNotesStream(SalesforceStream):
 
     @property
     def path(self):
-        """Set the path for the stream."""
         return "/services/data/v59.0/sobjects/ContentNote/{ContentDocumentId}"
+
+    def parse_response(self, response: requests.Response) -> t.Iterable[dict]:
+        if response.status_code == requests.codes.ok:
+            yield from super().parse_response(response)
